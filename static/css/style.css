@@ -1,0 +1,1004 @@
+/* ============================================================
+   Sistema de Controle de Acesso de Visitantes - INGOH
+   Folha de estilos principal
+   ============================================================ */
+
+:root {
+  --primary-color: #1a2744;
+  --primary-color-light: #28395e;
+  --accent-color: #2563eb;
+  --sidebar-bg: #1a2744;
+  --sidebar-text: #c9d3e6;
+  --sidebar-text-active: #ffffff;
+  --sidebar-active-bg: #2563eb;
+  --bg-color: #f4f6fb;
+  --card-bg: #ffffff;
+  --text-color: #1f2533;
+  --text-muted: #6b7280;
+  --border-color: #e5e8f0;
+  --success-color: #16a34a;
+  --danger-color: #dc2626;
+  --warning-color: #d97706;
+  --shadow-soft: 0 4px 16px rgba(26, 39, 68, 0.08);
+  --shadow-hover: 0 8px 24px rgba(26, 39, 68, 0.14);
+  --radius: 10px;
+  --sidebar-width: 250px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   LAYOUT GERAL
+   ============================================================ */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 28px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-header .logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.sidebar-header .subtitle {
+  font-size: 12px;
+  color: var(--sidebar-text);
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  margin-bottom: 4px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.sidebar-nav a i {
+  width: 18px;
+  text-align: center;
+}
+
+.sidebar-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--sidebar-text-active);
+  transform: translateX(2px);
+}
+
+.sidebar-nav a.active {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-footer {
+  padding: 16px 24px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   CONTEÚDO PRINCIPAL
+   ============================================================ */
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding: 32px 36px;
+}
+
+.topbar-mobile {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 14px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.topbar-mobile .logo {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 28px;
+  margin-bottom: 24px;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-card .stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--accent-color);
+  font-size: 20px;
+}
+
+.stat-card .stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.stat-card .stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   FORMULÁRIOS
+   ============================================================ */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.form-group label .obrigatorio {
+  color: var(--danger-color);
+}
+
+.form-group input,
+.form-group select {
+  padding: 11px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  background-color: #fafbfd;
+  color: var(--text-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background-color: #fff;
+}
+
+.form-group input.erro {
+  border-color: var(--danger-color);
+}
+
+.form-group small.erro-msg {
+  color: var(--danger-color);
+  font-size: 12px;
+  display: none;
+}
+
+.form-group input.erro + small.erro-msg {
+  display: block;
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.acoes-form {
+  flex-direction: row;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #15803d;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.3);
+}
+
+.btn-secondary {
+  background-color: #eef1f7;
+  color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background-color: #dde3ef;
+}
+
+.btn-sm {
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+/* ============================================================
+   TABELAS
+   ============================================================ */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table thead th {
+  background-color: var(--primary-color);
+  color: #fff;
+  text-align: left;
+  padding: 13px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+table thead th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f7f9fc;
+}
+
+table tbody tr:hover {
+  background-color: #eef3fc;
+}
+
+table tfoot td {
+  padding: 13px 16px;
+  font-weight: 700;
+  background-color: #eef1f7;
+  color: var(--primary-color);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-ativo {
+  background-color: rgba(22, 163, 74, 0.12);
+  color: var(--success-color);
+}
+
+.badge-encerrado {
+  background-color: rgba(107, 114, 128, 0.12);
+  color: var(--text-muted);
+}
+
+.badge-admin {
+  background-color: rgba(220, 38, 38, 0.12);
+  color: var(--danger-color);
+}
+
+.badge-operador {
+  background-color: rgba(37, 99, 235, 0.12);
+  color: var(--accent-color);
+}
+
+.badge-visualizador {
+  background-color: rgba(107, 114, 128, 0.12);
+  color: var(--text-muted);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state i {
+  font-size: 36px;
+  margin-bottom: 12px;
+  color: var(--border-color);
+}
+
+/* ============================================================
+   BUSCA / FILTROS
+   ============================================================ */
+
+.search-box {
+  position: relative;
+  margin-bottom: 18px;
+  max-width: 360px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 11px 14px 11px 38px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.filtros-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.filtros-row .form-group {
+  min-width: 180px;
+}
+
+/* ============================================================
+   ALERTAS / TOAST
+   ============================================================ */
+
+.alert {
+  padding: 13px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-success {
+  background-color: rgba(22, 163, 74, 0.1);
+  color: var(--success-color);
+}
+
+.alert-erro {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: var(--danger-color);
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-hover);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 999;
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast.toast-erro {
+  background-color: var(--danger-color);
+}
+
+.toast.toast-sucesso {
+  background-color: var(--success-color);
+}
+
+/* ============================================================
+   GRÁFICO (canvas)
+   ============================================================ */
+
+.chart-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#graficoSetores {
+  max-width: 100%;
+}
+
+/* ============================================================
+   LOGIN ADMINISTRATIVO
+   ============================================================ */
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--primary-color);
+  background-image: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: var(--shadow-hover);
+  padding: 36px 32px;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+}
+
+.login-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 26px;
+}
+
+.login-card form {
+  text-align: left;
+}
+
+/* ============================================================
+   ABAS DA ADMINISTRAÇÃO
+   ============================================================ */
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.admin-tab-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-tab-btn:hover {
+  color: var(--accent-color);
+}
+
+.admin-tab-btn.active {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+.tab-pane.hidden {
+  display: none;
+}
+
+/* ============================================================
+   ETIQUETA DE IMPRESSÃO
+   ============================================================ */
+
+.etiqueta-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 30px 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.etiqueta-card {
+  width: 100%;
+  max-width: 380px;
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: var(--shadow-hover);
+  overflow: hidden;
+  border: 2px solid var(--primary-color);
+}
+
+.etiqueta-topo {
+  background-color: var(--primary-color);
+  color: #fff;
+  text-align: center;
+  padding: 14px 16px 10px;
+}
+
+.etiqueta-topo .empresa-logo {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.etiqueta-faixa {
+  background-color: var(--accent-color);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 3px;
+  padding: 6px 0;
+}
+
+.etiqueta-corpo {
+  padding: 20px 22px;
+}
+
+.etiqueta-nome {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 14px;
+  word-break: break-word;
+}
+
+.etiqueta-linha {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border-color);
+  font-size: 13px;
+}
+
+.etiqueta-linha .label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.etiqueta-linha .valor {
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: right;
+}
+
+.etiqueta-rodape {
+  background-color: #f4f6fb;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.etiqueta-rodape .protocolo {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.etiqueta-acoes {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  :root {
+    --sidebar-width: 210px;
+  }
+}
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px 16px;
+  }
+
+  .topbar-mobile {
+    display: flex;
+  }
+
+  .filtros-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros-row .form-group {
+    min-width: 0;
+  }
+
+  .search-box {
+    max-width: none;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  table thead th,
+  table tbody td,
+  table tfoot td {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 20px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .login-card,
+  .etiqueta-card {
+    border-radius: 10px;
+  }
+
+  .login-card {
+    padding: 28px 22px;
+  }
+
+  .admin-tabs {
+    overflow-x: auto;
+  }
+
+  .admin-tab-btn {
+    padding: 10px 14px;
+    white-space: nowrap;
+  }
+
+  .form-actions,
+  .acoes-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions .btn,
+  .acoes-form .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   IMPRESSÃO
+   ============================================================ */
+
+@media print {
+  /* Tamanho físico exato da etiqueta: 9,0cm x 4,00cm */
+  @page {
+    size: 9.0cm 4.0cm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 9.0cm;
+    height: 4.0cm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .etiqueta-card, .etiqueta-card * {
+    visibility: visible;
+  }
+
+  .etiqueta-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 9.0cm;
+    height: 4.0cm;
+    margin: 0;
+    /* Espaço mínimo entre o conteúdo e a borda física da etiqueta */
+    padding: 0.15cm;
+    box-sizing: border-box;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Tipografia e espaçamentos em cm, proporcionais ao tamanho da etiqueta,
+     para que nenhuma informação seja cortada ao imprimir */
+  /* Sem cor de fundo: muitas impressoras de etiqueta não reproduzem bem
+     áreas coloridas, então o texto fica no mesmo tom de negrito do nome */
+  .etiqueta-topo {
+    background-color: transparent;
+    color: var(--primary-color);
+    padding: 0.08cm 0.1cm 0.05cm;
+  }
+
+  .etiqueta-topo .empresa-logo {
+    font-size: 0.38cm;
+    font-weight: 800;
+  }
+
+  .etiqueta-faixa {
+    background-color: transparent;
+    color: var(--primary-color);
+    font-weight: 800;
+    padding: 0.05cm 0;
+    font-size: 0.2cm;
+    letter-spacing: 1.5px;
+  }
+
+  .etiqueta-corpo {
+    flex: 1;
+    min-height: 0;
+    padding: 0.1cm 0.15cm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.04cm;
+  }
+
+  .etiqueta-nome {
+    font-size: 0.4cm;
+    line-height: 1.1;
+    margin-bottom: 0.1cm;
+  }
+
+  /* Rótulo e valor próximos um do outro (em vez de nas extremidades),
+     para que a relação entre eles fique clara na etiqueta impressa */
+  .etiqueta-linha {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 0.15cm;
+    padding: 0.05cm 0;
+    font-size: 0.21cm;
+    border-bottom: 0.5pt solid #999;
+  }
+
+  .etiqueta-linha .label {
+    flex: 0 0 auto;
+    min-width: 1.3cm;
+    font-size: 0.17cm;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #555;
+  }
+
+  .etiqueta-linha .valor {
+    flex: 1;
+    text-align: left;
+    font-size: 0.21cm;
+    color: #000;
+    word-break: break-word;
+  }
+
+  .etiqueta-rodape {
+    padding: 0.06cm;
+    font-size: 0.16cm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

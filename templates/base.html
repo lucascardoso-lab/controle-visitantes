@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}Controle de Visitantes{% endblock %} - {{ empresa_nome }}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block estilos_extra %}{% endblock %}
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar de navegação -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">{{ empresa_nome }}</div>
+        <div class="subtitle">Controle de Visitantes</div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li>
+          <a href="{{ url_for('index') }}" class="{{ 'active' if request.path == '/' else '' }}">
+            <i class="fa-solid fa-user-plus"></i> Cadastrar Visitante
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('saida') }}" class="{{ 'active' if request.path == '/saida' else '' }}">
+            <i class="fa-solid fa-right-from-bracket"></i> Registrar Saída
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('relatorios') }}" class="{{ 'active' if request.path == '/relatorios' else '' }}">
+            <i class="fa-solid fa-chart-column"></i> Relatórios
+          </a>
+        </li>
+        {% if session.get('permissao') == 'admin' %}
+        <li>
+          <a href="{{ url_for('admin') }}" class="{{ 'active' if request.path == '/admin' else '' }}">
+            <i class="fa-solid fa-user-shield"></i> Administração
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+
+      <div class="sidebar-footer">
+        {% if session.get('usuario_id') %}
+          <div style="margin-bottom: 8px;">
+            <i class="fa-solid fa-circle-user"></i> {{ session.get('usuario_nome') }}
+          </div>
+          <a href="{{ url_for('logout') }}" style="color: var(--sidebar-text);">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
+          </a>
+        {% else %}
+          &copy; {{ empresa_nome }} - Recepção
+        {% endif %}
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content-wrapper" style="width:100%;">
+
+      <!-- Topbar visível apenas em dispositivos móveis -->
+      <div class="topbar-mobile">
+        <span class="logo">{{ empresa_nome }}</span>
+        <button class="hamburger-btn" id="btnHamburger" aria-label="Abrir menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+      <main class="main-content">
+        {% block conteudo %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast de notificações -->
+  <div class="toast" id="toast"></div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  {% block scripts_extra %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Relatórios{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-chart-column"></i> Relatórios</h1>
+  <p>Acompanhe estatísticas de visitas por setor e tempo de estadia.</p>
+</div>
+
+<!-- Relatório 1: Visitantes por Dia e Setor -->
+<div class="card">
+  <div class="card-title"><i class="fa-solid fa-building"></i> Visitantes por Dia e Setor</div>
+
+  <div class="filtros-row">
+    <div class="form-group">
+      <label for="filtroInicio">Data início</label>
+      <input type="date" id="filtroInicio">
+    </div>
+    <div class="form-group">
+      <label for="filtroFim">Data fim</label>
+      <input type="date" id="filtroFim">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary" id="btnFiltrarDiaSetor">
+        <i class="fa-solid fa-filter"></i> Filtrar
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Setor</th>
+          <th>Quantidade de Visitantes</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabelaDiaSetor">
+        <tr><td colspan="3" class="empty-state">Selecione um período e clique em Filtrar.</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">Total de visitantes no período</td>
+          <td id="totalDiaSetor">0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="chart-container" style="margin-top: 24px;">
+    <canvas id="graficoSetores" height="260"></canvas>
+  </div>
+</div>
+
+<!-- Relatório 2: Tempo de Estadia -->
+<div class="card">
+  <div class="card-title"><i class="fa-solid fa-clock"></i> Tempo de Estadia</div>
+
+  <div class="filtros-row">
+    <div class="form-group">
+      <label for="filtroDataEstadia">Data</label>
+      <input type="date" id="filtroDataEstadia">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary" id="btnFiltrarEstadia">
+        <i class="fa-solid fa-filter"></i> Filtrar
+      </button>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-success" id="btnExportarCsv">
+        <i class="fa-solid fa-file-csv"></i> Exportar CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Empresa</th>
+          <th>Setor</th>
+          <th>Entrada</th>
+          <th>Saída</th>
+          <th>Tempo Total</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabelaEstadia">
+        <tr><td colspan="6" class="empty-state">Selecione uma data e clique em Filtrar.</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">Tempo médio de estadia</td>
+          <td id="mediaEstadia">00:00</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    AppVisitantes.inicializarPaginaRelatorios();
+  });
+</script>
+{% endblock %}

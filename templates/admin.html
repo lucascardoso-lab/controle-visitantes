@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Administração{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-user-shield"></i> Administração</h1>
+  <p>Gerencie os usuários do sistema e os setores disponíveis para visitas.</p>
+</div>
+
+<div class="admin-tabs">
+  <button type="button" class="admin-tab-btn active" id="abaUsuariosBtn" data-tab="usuarios">
+    <i class="fa-solid fa-users-gear"></i> Usuários
+  </button>
+  <button type="button" class="admin-tab-btn" id="abaSetoresBtn" data-tab="setores">
+    <i class="fa-solid fa-building"></i> Setores
+  </button>
+</div>
+
+<!-- Gestão de Usuários -->
+<div class="card tab-pane" id="abaUsuarios" data-tab="usuarios">
+  <div class="card-title"><i class="fa-solid fa-users-gear"></i> Usuários</div>
+
+  <div id="alertaUsuario"></div>
+
+  <form id="formUsuario" class="form-grid" style="margin-bottom: 22px;">
+    <input type="hidden" id="usuario_id">
+
+    <div class="form-group">
+      <label for="usuario_nome">Nome <span class="obrigatorio">*</span></label>
+      <input type="text" id="usuario_nome" placeholder="Nome completo" required>
+    </div>
+
+    <div class="form-group">
+      <label for="usuario_login">Login <span class="obrigatorio">*</span></label>
+      <input type="text" id="usuario_login" placeholder="Login de acesso" required>
+    </div>
+
+    <div class="form-group">
+      <label for="usuario_senha">Senha <span class="obrigatorio" id="senhaObrigatoria">*</span></label>
+      <input type="password" id="usuario_senha" placeholder="Senha de acesso">
+      <small style="color: var(--text-muted); font-size: 12px;" id="senhaAjuda">Obrigatória para novos usuários.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="usuario_permissao">Permissão <span class="obrigatorio">*</span></label>
+      <select id="usuario_permissao" required>
+        <option value="admin">Administrador</option>
+        <option value="operador" selected>Operador</option>
+        <option value="visualizador">Visualizador</option>
+      </select>
+    </div>
+
+    <div class="form-group full acoes-form">
+      <button type="button" class="btn btn-secondary no-print" id="btnCancelarUsuario" style="display: none;">
+        <i class="fa-solid fa-xmark"></i> Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" id="btnSalvarUsuario">
+        <i class="fa-solid fa-floppy-disk"></i> Cadastrar Usuário
+      </button>
+    </div>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Login</th>
+          <th>Permissão</th>
+          <th>Criado em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabelaUsuarios">
+        <tr><td colspan="5" class="empty-state">Carregando usuários...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Gestão de Setores -->
+<div class="card tab-pane hidden" id="abaSetores" data-tab="setores">
+  <div class="card-title"><i class="fa-solid fa-building"></i> Setores</div>
+
+  <div id="alertaSetor"></div>
+
+  <form id="formSetor" class="form-grid" style="margin-bottom: 22px;">
+    <input type="hidden" id="setor_id">
+
+    <div class="form-group full">
+      <label for="setor_nome">Nome do setor <span class="obrigatorio">*</span></label>
+      <input type="text" id="setor_nome" placeholder="Ex: TI, RH, Financeiro..." required>
+    </div>
+
+    <div class="form-group full acoes-form">
+      <button type="button" class="btn btn-secondary no-print" id="btnCancelarSetor" style="display: none;">
+        <i class="fa-solid fa-xmark"></i> Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" id="btnSalvarSetor">
+        <i class="fa-solid fa-floppy-disk"></i> Cadastrar Setor
+      </button>
+    </div>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabelaSetoresAdmin">
+        <tr><td colspan="2" class="empty-state">Carregando setores...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    AppVisitantes.inicializarPaginaAdmin();
+  });
+</script>
+{% endblock %}

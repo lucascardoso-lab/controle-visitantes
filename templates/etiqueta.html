@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etiqueta do Visitante - {{ empresa_nome }}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="etiqueta-page">
+
+    <div class="etiqueta-card" id="etiquetaCard">
+      <div class="etiqueta-topo">
+        <div class="empresa-logo">{{ empresa_nome }}</div>
+      </div>
+
+      <div class="etiqueta-faixa">VISITANTE</div>
+
+      <div class="etiqueta-corpo" id="etiquetaCorpo">
+        <div class="etiqueta-nome" id="campoNome">Carregando...</div>
+
+        <div class="etiqueta-linha">
+          <span class="label">Empresa</span>
+          <span class="valor" id="campoEmpresa">-</span>
+        </div>
+        <div class="etiqueta-linha">
+          <span class="label">Setor</span>
+          <span class="valor" id="campoSetor">-</span>
+        </div>
+        <div class="etiqueta-linha">
+          <span class="label">Visitando</span>
+          <span class="valor" id="campoPessoaVisita">-</span>
+        </div>
+        <div class="etiqueta-linha">
+          <span class="label">Entrada</span>
+          <span class="valor" id="campoHoraEntrada">-</span>
+        </div>
+      </div>
+
+      <div class="etiqueta-rodape">
+        Protocolo: <span class="protocolo" id="campoProtocolo">-</span>
+      </div>
+    </div>
+
+    <div class="etiqueta-acoes no-print">
+      <button class="btn btn-primary" id="btnImprimirNovamente">
+        <i class="fa-solid fa-print"></i> Imprimir Novamente
+      </button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Novo Cadastro
+      </a>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      AppVisitantes.inicializarPaginaEtiqueta('{{ visitante_id }}');
+    });
+  </script>
+</body>
+</html>

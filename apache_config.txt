@@ -1,0 +1,41 @@
+# ============================================================
+# Configuração Apache2 + mod_wsgi
+# Sistema de Controle de Acesso de Visitantes - INGOH
+#
+# Instalação:
+#   sudo apt install apache2 libapache2-mod-wsgi-py3
+#   sudo a2enmod wsgi
+#   sudo cp apache_config.txt /etc/apache2/sites-available/controle-visitantes.conf
+#   sudo a2ensite controle-visitantes.conf
+#   sudo systemctl reload apache2
+# ============================================================
+
+<VirtualHost *:80>
+    ServerName visitantes.ingoh.local
+    ServerAdmin webmaster@ingoh.com.br
+
+    DocumentRoot /var/www/controle-visitantes
+
+    WSGIDaemonProcess controle_visitantes python-path=/var/www/controle-visitantes python-home=/var/www/controle-visitantes/venv
+    WSGIProcessGroup controle_visitantes
+    WSGIScriptAlias / /var/www/controle-visitantes/controle_visitantes.wsgi
+
+    <Directory /var/www/controle-visitantes>
+        Require all granted
+    </Directory>
+
+    Alias /static /var/www/controle-visitantes/static
+    <Directory /var/www/controle-visitantes/static>
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/controle-visitantes-error.log
+    CustomLog ${APACHE_LOG_DIR}/controle-visitantes-access.log combined
+</VirtualHost>
+
+# ============================================================
+# Permissões recomendadas (executar no servidor):
+#
+#   sudo chown -R www-data:www-data /var/www/controle-visitantes
+#   sudo chmod -R 755 /var/www/controle-visitantes
+# ============================================================

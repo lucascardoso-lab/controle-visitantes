@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Registrar Saída{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-right-from-bracket"></i> Registrar Saída</h1>
+  <p>Visitantes com entrada registrada hoje e ainda dentro da empresa.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><i class="fa-solid fa-users"></i> Visitantes Ativos</div>
+
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="buscaVisitante" placeholder="Buscar por nome ou empresa...">
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Empresa</th>
+          <th>Setor</th>
+          <th>Pessoa Visitada</th>
+          <th>Hora Entrada</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabelaVisitantes">
+        <tr><td colspan="6" class="empty-state">Carregando visitantes...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    AppVisitantes.inicializarPaginaSaida();
+  });
+</script>
+{% endblock %}
