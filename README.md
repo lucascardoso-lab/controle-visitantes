@@ -13,7 +13,7 @@ O sistema gerencia o fluxo completo de visitas em uma recepção: cadastro com c
 - Registro de entrada e saída
 - Relatórios (visitantes por dia/setor e tempo de estadia, com exportação em CSV)
 - Página de administração (usuários e setores)
-- Impressão de etiqueta 7,62 x 5,08 cm
+- Impressão de etiqueta 9,0 x 4,0 cm
 - Login obrigatório em todas as rotas, com controle de permissão por tipo de usuário
 - Encerramento automático das visitas em aberto às 23h (rota `POST /fechar-automatico`, pensada para ser chamada por uma tarefa agendada)
 
