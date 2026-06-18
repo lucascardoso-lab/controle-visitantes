@@ -316,6 +316,100 @@ body {
   display: block;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.aviso-cpf-encontrado {
+  color: var(--success-color);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.cadastro-cabecalho {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.cadastro-cabecalho-campos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cadastro-cabecalho-linha2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.cadastro-cabecalho-foto {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.foto-captura {
+  width: 160px;
+  height: 160px;
+  border: 2px dashed var(--border-color);
+  border-radius: 10px;
+  background-color: #f7f8fb;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.foto-captura video,
+.foto-captura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-captura canvas {
+  display: none;
+}
+
+.foto-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.foto-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.foto-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.foto-thumb-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eef1f7;
+  color: var(--text-muted);
+}
+
 .form-actions {
   margin-top: 24px;
   display: flex;
@@ -790,6 +884,14 @@ table tfoot td {
 
 @media (max-width: 900px) {
   .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastro-cabecalho {
+    flex-direction: column;
+  }
+
+  .cadastro-cabecalho-linha2 {
     grid-template-columns: 1fr;
   }
 }

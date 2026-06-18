@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS visitantes (
   hora_saida DATETIME NULL,
   status ENUM('ativo','encerrado') DEFAULT 'ativo',
   encerrado_automatico TINYINT(1) DEFAULT 0,
+  foto_path VARCHAR(255) NULL,
   INDEX idx_status_data (status, hora_entrada),
   INDEX idx_cpf (cpf)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

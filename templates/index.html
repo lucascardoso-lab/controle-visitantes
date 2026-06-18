@@ -16,20 +16,54 @@
   <form id="formCadastro" novalidate>
     <div class="form-grid">
 
-      <div class="form-group full">
-        <label for="nome">Nome completo do visitante <span class="obrigatorio">*</span></label>
-        <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required>
-      </div>
+      <div class="form-group full cadastro-cabecalho">
+        <div class="cadastro-cabecalho-campos">
+          <div class="form-group">
+            <label for="nome">Nome completo do visitante <span class="obrigatorio">*</span></label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required>
+          </div>
 
-      <div class="form-group">
-        <label for="cpf">CPF <span class="obrigatorio">*</span></label>
-        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
-        <small class="erro-msg">CPF inválido. Verifique o número informado.</small>
-      </div>
+          <div class="cadastro-cabecalho-linha2">
+            <div class="form-group">
+              <label for="cpf">CPF <span class="obrigatorio">*</span></label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+              <small class="erro-msg">CPF inválido. Verifique o número informado.</small>
+              <small class="aviso-cpf-encontrado hidden" id="avisoCpfEncontrado">
+                <i class="fa-solid fa-circle-check"></i> Visitante encontrado! Dados preenchidos automaticamente.
+              </small>
+            </div>
 
-      <div class="form-group">
-        <label for="data_nascimento">Data de nascimento <span class="obrigatorio">*</span></label>
-        <input type="date" id="data_nascimento" name="data_nascimento" required>
+            <div class="form-group">
+              <label for="data_nascimento">Data de nascimento <span class="obrigatorio">*</span></label>
+              <input type="date" id="data_nascimento" name="data_nascimento" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="cadastro-cabecalho-foto">
+          <label><i class="fa-solid fa-camera"></i> Foto do visitante</label>
+          <input type="hidden" id="fotoBase64">
+          <div class="foto-captura">
+            <video id="webcamPreview" class="hidden" autoplay playsinline muted></video>
+            <canvas id="canvasCaptura" class="hidden"></canvas>
+            <img id="fotoPreview" class="hidden" alt="Foto do visitante">
+            <div class="foto-placeholder" id="fotoPlaceholder">
+              <i class="fa-solid fa-camera-retro"></i>
+              <span>Nenhuma foto capturada</span>
+            </div>
+          </div>
+          <div class="foto-acoes">
+            <button type="button" class="btn btn-secondary" id="btnAbrirCamera">
+              <i class="fa-solid fa-camera"></i> Capturar Foto
+            </button>
+            <button type="button" class="btn btn-primary hidden" id="btnTirarFoto">
+              <i class="fa-solid fa-circle-dot"></i> Tirar Foto
+            </button>
+            <button type="button" class="btn btn-secondary hidden" id="btnRepetirFoto">
+              <i class="fa-solid fa-rotate-left"></i> Repetir
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">

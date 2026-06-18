@@ -6,6 +6,7 @@
 import os
 import csv
 import io
+import base64
 import pymysql
 from functools import wraps
 
@@ -20,6 +21,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'chave-padrao-insegura')
 
 EMPRESA_NOME = os.getenv('EMPRESA_NOME', 'INGOH')
+
+PASTA_FOTOS = os.path.join(app.static_folder, 'fotos')
+os.makedirs(PASTA_FOTOS, exist_ok=True)
+TAMANHO_MAXIMO_FOTO = 4 * 1024 * 1024  # 4MB decodificado
 
 
 def get_db():
@@ -44,6 +49,38 @@ def validar_cpf(cpf):
         if digito != int(cpf[i]):
             return False
     return True
+
+
+def buscar_visitante_por_cpf(cursor, cpf_digitos):
+    """Busca o cadastro mais recente de um visitante pelos dígitos do CPF (ignora formatação)."""
+    cursor.execute('''
+        SELECT nome, data_nascimento, empresa, telefone, foto_path
+        FROM visitantes
+        WHERE REPLACE(REPLACE(cpf, '.', ''), '-', '') = %s
+        ORDER BY hora_entrada DESC
+        LIMIT 1
+    ''', (cpf_digitos,))
+    return cursor.fetchone()
+
+
+def salvar_foto_base64(foto_base64, cpf_digitos):
+    """Decodifica uma imagem em base64 (data URL) e grava em static/fotos/<cpf>.jpg."""
+    if ',' in foto_base64:
+        foto_base64 = foto_base64.split(',', 1)[1]
+
+    try:
+        conteudo = base64.b64decode(foto_base64, validate=True)
+    except Exception:
+        raise ValueError('Foto inválida.')
+
+    if not conteudo or len(conteudo) > TAMANHO_MAXIMO_FOTO:
+        raise ValueError('Foto inválida ou maior que o limite permitido (4MB).')
+
+    caminho_arquivo = os.path.join(PASTA_FOTOS, f'{cpf_digitos}.jpg')
+    with open(caminho_arquivo, 'wb') as arquivo:
+        arquivo.write(conteudo)
+
+    return f'fotos/{cpf_digitos}.jpg'
 
 
 def admin_required(funcao):
@@ -432,6 +469,7 @@ def api_cadastrar():
     telefone = (dados.get('telefone') or '').strip()
     setor_visita = (dados.get('setor_visita') or '').strip()
     pessoa_visita = (dados.get('pessoa_visita') or '').strip()
+    foto_base64 = (dados.get('foto_base64') or '').strip()
 
     if not nome or not cpf or not data_nascimento or not setor_visita or not pessoa_visita:
         return jsonify({'sucesso': False, 'mensagem': 'Preencha todos os campos obrigatórios.'}), 400
@@ -439,14 +477,28 @@ def api_cadastrar():
     if not validar_cpf(cpf):
         return jsonify({'sucesso': False, 'mensagem': 'CPF inválido. Verifique o número informado.'}), 400
 
+    cpf_digitos = ''.join(filter(str.isdigit, cpf))
+
     try:
         conn = get_db()
         cursor = conn.cursor()
+
+        if foto_base64:
+            try:
+                foto_path = salvar_foto_base64(foto_base64, cpf_digitos)
+            except ValueError as erro_foto:
+                cursor.close()
+                conn.close()
+                return jsonify({'sucesso': False, 'mensagem': str(erro_foto)}), 400
+        else:
+            visitante_anterior = buscar_visitante_por_cpf(cursor, cpf_digitos)
+            foto_path = visitante_anterior['foto_path'] if visitante_anterior else None
+
         cursor.execute('''
             INSERT INTO visitantes
-                (nome, cpf, data_nascimento, empresa, telefone, setor_visita, pessoa_visita, hora_entrada, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), 'ativo')
-        ''', (nome, cpf, data_nascimento, empresa, telefone, setor_visita, pessoa_visita))
+                (nome, cpf, data_nascimento, empresa, telefone, setor_visita, pessoa_visita, hora_entrada, status, foto_path)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), 'ativo', %s)
+        ''', (nome, cpf, data_nascimento, empresa, telefone, setor_visita, pessoa_visita, foto_path))
         conn.commit()
         novo_id = cursor.lastrowid
         cursor.close()
@@ -454,6 +506,34 @@ def api_cadastrar():
         return jsonify({'sucesso': True, 'mensagem': 'Visitante cadastrado com sucesso!', 'id': novo_id})
     except Exception as erro:
         return jsonify({'sucesso': False, 'mensagem': f'Erro ao cadastrar visitante: {erro}'}), 500
+
+
+@app.route('/api/visitante/buscar')
+def api_buscar_visitante_por_cpf():
+    """Busca o cadastro mais recente de um visitante pelo CPF, para autopreenchimento."""
+    cpf = request.args.get('cpf', '')
+    cpf_digitos = ''.join(filter(str.isdigit, cpf))
+
+    if not cpf_digitos:
+        return jsonify({'sucesso': False, 'mensagem': 'Informe o CPF.'}), 400
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        visitante = buscar_visitante_por_cpf(cursor, cpf_digitos)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        if not visitante:
+            return jsonify({'sucesso': True, 'encontrado': False})
+
+        if visitante['data_nascimento']:
+            visitante['data_nascimento'] = visitante['data_nascimento'].strftime('%Y-%m-%d')
+
+        return jsonify({'sucesso': True, 'encontrado': True, 'visitante': visitante})
+    except Exception as erro:
+        return jsonify({'sucesso': False, 'mensagem': f'Erro ao buscar visitante: {erro}'}), 500
 
 
 @app.route('/api/visitante/<int:visitante_id>')
@@ -603,7 +683,7 @@ def _consultar_tempo_estadia(data_filtro):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT nome, empresa, setor_visita, pessoa_visita, hora_entrada, hora_saida
+        SELECT nome, empresa, setor_visita, pessoa_visita, hora_entrada, hora_saida, foto_path
         FROM visitantes
         WHERE DATE(hora_entrada) = %s
         ORDER BY hora_entrada
@@ -652,7 +732,8 @@ def api_relatorio_tempo_estadia():
                 'setor': linha['setor_visita'],
                 'entrada': linha['hora_entrada'].strftime('%d/%m/%Y %H:%M'),
                 'saida': saida_fmt,
-                'tempo_total': tempo_total
+                'tempo_total': tempo_total,
+                'foto_path': linha['foto_path']
             })
 
         if duracoes:

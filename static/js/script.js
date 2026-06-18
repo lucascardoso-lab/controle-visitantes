@@ -129,6 +129,7 @@ const AppVisitantes = (function () {
     const campoHoraEntrada = document.getElementById('hora_entrada');
     const selectSetor = document.getElementById('setor_visita');
     const btnCadastrar = document.getElementById('btnCadastrar');
+    const avisoCpfEncontrado = document.getElementById('avisoCpfEncontrado');
 
     // Preenche o horário de entrada automaticamente com a hora atual
     if (campoHoraEntrada) {
@@ -144,6 +145,12 @@ const AppVisitantes = (function () {
     campoTelefone.addEventListener('input', function () {
       campoTelefone.value = aplicarMascaraTelefone(campoTelefone.value);
     });
+
+    campoCpf.addEventListener('blur', function () {
+      autopreencherPorCpf(campoCpf.value, avisoCpfEncontrado);
+    });
+
+    inicializarCapturaFoto(form);
 
     // Carrega os setores cadastrados no banco
     carregarSetores(selectSetor);
@@ -166,7 +173,8 @@ const AppVisitantes = (function () {
         empresa: document.getElementById('empresa').value.trim(),
         telefone: campoTelefone.value.trim(),
         setor_visita: selectSetor.value,
-        pessoa_visita: document.getElementById('pessoa_visita').value.trim()
+        pessoa_visita: document.getElementById('pessoa_visita').value.trim(),
+        foto_base64: document.getElementById('fotoBase64').value
       };
 
       btnCadastrar.disabled = true;
@@ -181,6 +189,7 @@ const AppVisitantes = (function () {
 
         if (status === 200 && dados.sucesso) {
           mostrarToast('Visitante cadastrado com sucesso!', 'sucesso');
+          pararCameraCadastro();
           window.location.href = '/etiqueta?id=' + dados.id;
         } else {
           mostrarToast(dados.mensagem || 'Não foi possível cadastrar o visitante.', 'erro');
@@ -192,6 +201,121 @@ const AppVisitantes = (function () {
         btnCadastrar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Cadastrar e Imprimir Etiqueta';
       }
     });
+  }
+
+  // ----------------------------------------------------------
+  // CAPTURA DE FOTO VIA WEBCAM (formulário de cadastro)
+  // ----------------------------------------------------------
+
+  let streamCameraCadastro = null;
+
+  function pararCameraCadastro() {
+    if (streamCameraCadastro) {
+      streamCameraCadastro.getTracks().forEach(function (faixa) { faixa.stop(); });
+      streamCameraCadastro = null;
+    }
+  }
+
+  function inicializarCapturaFoto(form) {
+    const video = document.getElementById('webcamPreview');
+    const canvas = document.getElementById('canvasCaptura');
+    const imgPreview = document.getElementById('fotoPreview');
+    const placeholder = document.getElementById('fotoPlaceholder');
+    const campoFotoBase64 = document.getElementById('fotoBase64');
+    const btnAbrirCamera = document.getElementById('btnAbrirCamera');
+    const btnTirarFoto = document.getElementById('btnTirarFoto');
+    const btnRepetirFoto = document.getElementById('btnRepetirFoto');
+
+    if (!video || !btnAbrirCamera) return;
+
+    function mostrarApenasBotao(botaoVisivel) {
+      [btnAbrirCamera, btnTirarFoto, btnRepetirFoto].forEach(function (botao) {
+        botao.classList.toggle('hidden', botao !== botaoVisivel);
+      });
+    }
+
+    btnAbrirCamera.addEventListener('click', async function () {
+      try {
+        streamCameraCadastro = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = streamCameraCadastro;
+        video.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        imgPreview.classList.add('hidden');
+        mostrarApenasBotao(btnTirarFoto);
+      } catch (erro) {
+        mostrarToast('Não foi possível acessar a câmera. Verifique as permissões do navegador.', 'erro');
+      }
+    });
+
+    btnTirarFoto.addEventListener('click', function () {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      campoFotoBase64.value = dataUrl;
+      imgPreview.src = dataUrl;
+      imgPreview.classList.remove('hidden');
+      video.classList.add('hidden');
+      pararCameraCadastro();
+      mostrarApenasBotao(btnRepetirFoto);
+    });
+
+    btnRepetirFoto.addEventListener('click', function () {
+      campoFotoBase64.value = '';
+      imgPreview.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+      mostrarApenasBotao(btnAbrirCamera);
+    });
+
+    window.addEventListener('beforeunload', pararCameraCadastro);
+  }
+
+  async function autopreencherPorCpf(cpf, avisoCpfEncontrado) {
+    if (!validarCpf(cpf)) {
+      if (avisoCpfEncontrado) avisoCpfEncontrado.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const { dados } = await requisitarJson('/api/visitante/buscar?cpf=' + encodeURIComponent(cpf));
+
+      if (!dados.sucesso || !dados.encontrado) {
+        if (avisoCpfEncontrado) avisoCpfEncontrado.classList.add('hidden');
+        return;
+      }
+
+      const visitante = dados.visitante;
+      document.getElementById('nome').value = visitante.nome || '';
+      document.getElementById('data_nascimento').value = visitante.data_nascimento || '';
+      document.getElementById('empresa').value = visitante.empresa || '';
+      document.getElementById('telefone').value = visitante.telefone || '';
+
+      if (visitante.foto_path) {
+        const imgPreview = document.getElementById('fotoPreview');
+        const placeholder = document.getElementById('fotoPlaceholder');
+        const btnAbrirCamera = document.getElementById('btnAbrirCamera');
+        const btnTirarFoto = document.getElementById('btnTirarFoto');
+        const btnRepetirFoto = document.getElementById('btnRepetirFoto');
+
+        pararCameraCadastro();
+        document.getElementById('webcamPreview').classList.add('hidden');
+        document.getElementById('fotoBase64').value = '';
+        imgPreview.src = '/static/' + visitante.foto_path;
+        imgPreview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        [btnAbrirCamera, btnTirarFoto, btnRepetirFoto].forEach(function (botao) {
+          botao.classList.toggle('hidden', botao !== btnRepetirFoto);
+        });
+      }
+
+      if (avisoCpfEncontrado) {
+        avisoCpfEncontrado.classList.remove('hidden');
+        setTimeout(function () { avisoCpfEncontrado.classList.add('hidden'); }, 3500);
+      }
+    } catch (erro) {
+      if (avisoCpfEncontrado) avisoCpfEncontrado.classList.add('hidden');
+    }
   }
 
   async function carregarSetores(selectElemento) {
@@ -505,12 +629,12 @@ const AppVisitantes = (function () {
       const { dados } = await requisitarJson(`/api/relatorio/tempo-estadia?data=${data}`);
 
       if (!dados.sucesso) {
-        corpoTabela.innerHTML = '<tr><td colspan="6" class="empty-state">Erro ao gerar relatório.</td></tr>';
+        corpoTabela.innerHTML = '<tr><td colspan="7" class="empty-state">Erro ao gerar relatório.</td></tr>';
         return;
       }
 
       if (!dados.dados.length) {
-        corpoTabela.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum visitante encontrado nesta data.</td></tr>';
+        corpoTabela.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum visitante encontrado nesta data.</td></tr>';
         mediaCelula.textContent = '00:00';
         return;
       }
@@ -518,8 +642,12 @@ const AppVisitantes = (function () {
       corpoTabela.innerHTML = dados.dados.map(function (linha) {
         const classeBadge = linha.saida === 'Em visita' ? 'badge badge-ativo' : '';
         const saidaHtml = linha.saida === 'Em visita' ? `<span class="${classeBadge}">Em visita</span>` : linha.saida;
+        const fotoHtml = linha.foto_path
+          ? `<img src="/static/${linha.foto_path}" class="foto-thumb" alt="Foto de ${linha.nome}">`
+          : `<div class="foto-thumb foto-thumb-vazia"><i class="fa-solid fa-user"></i></div>`;
         return `
           <tr>
+            <td>${fotoHtml}</td>
             <td>${linha.nome}</td>
             <td>${linha.empresa}</td>
             <td>${linha.setor}</td>
